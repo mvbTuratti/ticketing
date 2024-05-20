@@ -14,17 +14,28 @@ defmodule TicketingWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :graphql do
+    plug AshGraphql.Plug
+  end
+
   scope "/", TicketingWeb do
     pipe_through :browser
 
     get "/", PageController, :home
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", TicketingWeb do
-  #   pipe_through :api
-  # end
+  scope "/" do
+    pipe_through [:graphql]
 
+    forward "/gql",
+      Absinthe.Plug,
+      schema: Module.concat(["Ticketing.GraphqlSchema"])
+
+    forward "/playground",
+            Absinthe.Plug.GraphiQL,
+            schema: Module.concat(["Ticketing.GraphqlSchema"]),
+            interface: :playground
+  end
   # Enable LiveDashboard in development
   if Application.compile_env(:ticketing, :dev_routes) do
     # If you want to use the LiveDashboard in production, you should put

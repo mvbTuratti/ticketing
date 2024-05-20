@@ -11,6 +11,11 @@ config :ticketing,
   ecto_repos: [Ticketing.Repo],
   generators: [timestamp_type: :utc_datetime]
 
+config :ticketing, :ash_domains, [Ticketing.Support]
+
+config :ticketing,
+  ecto_repos: [Ticketing.Repo]
+
 # Configures the endpoint
 config :ticketing, TicketingWeb.Endpoint,
   url: [host: "localhost"],
