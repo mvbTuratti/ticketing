@@ -3,6 +3,7 @@ defmodule Ticketing.Support.Representative do
   use Ash.Resource,
     domain: Ticketing.Support,
     data_layer: AshPostgres.DataLayer,
+    # data_layer: Ash.DataLayer.Ets,
     extensions: [
       AshGraphql.Resource
     ]
@@ -20,6 +21,7 @@ defmodule Ticketing.Support.Representative do
     create :create do
       accept [:name]
     end
+
   end
 
   graphql do

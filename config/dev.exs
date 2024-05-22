@@ -6,6 +6,7 @@ config :ticketing, Ticketing.Repo,
   password: "postgres",
   hostname: "localhost",
   database: "ticketing_dev",
+  port: 5432,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10

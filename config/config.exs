@@ -13,9 +13,6 @@ config :ticketing,
 
 config :ticketing, :ash_domains, [Ticketing.Support]
 
-config :ticketing,
-  ecto_repos: [Ticketing.Repo]
-
 # Configures the endpoint
 config :ticketing, TicketingWeb.Endpoint,
   url: [host: "localhost"],

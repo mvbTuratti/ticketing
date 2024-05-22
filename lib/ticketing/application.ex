@@ -15,6 +15,7 @@ defmodule Ticketing.Application do
       # Start a worker by calling: Ticketing.Worker.start_link(arg)
       # {Ticketing.Worker, arg},
       # Start to serve requests, typically the last entry
+      TicketingWeb.Endpoint
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
