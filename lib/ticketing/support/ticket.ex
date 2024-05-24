@@ -94,15 +94,17 @@ defmodule Ticketing.Support.Ticket do
 
       # The status defaulting to open makes sense
       default :open
-    end
 
+    end
   end
   relationships do
     # belongs_to means that the destination attribute is unique, meaning only one related record could exist.
     # We assume that the destination attribute is `representative_id` based
     # on the name of this relationship and that the source attribute is `representative_id`.
     # We create `representative_id` automatically.
-    belongs_to :representative, Ticketing.Support.Representative
+    belongs_to :representative, Ticketing.Support.Representative do
+      public? true
+    end
   end
 
 
