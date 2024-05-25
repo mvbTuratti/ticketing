@@ -24,9 +24,11 @@ defmodule Ticketing.Support.Ticket do
     read :query_tickets do
       argument :representative_id, :uuid
 
+      pagination offset?: true, countable: :by_default
+
       filter(
         expr do
-          is_nil(^arg(:representative_id)) or representative_id == ^arg(:representative_id)
+          representative_id == ^arg(:representative_id)
         end
       )
     end
@@ -69,6 +71,7 @@ defmodule Ticketing.Support.Ticket do
       update :close_ticket, :close
       destroy :delete_ticket, :destroy
     end
+
   end
 
   # Attributes are the simple pieces of data that exist on your resource

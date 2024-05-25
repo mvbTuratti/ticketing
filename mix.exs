@@ -59,7 +59,9 @@ defmodule Ticketing.MixProject do
       {:ash, "~> 3.0"},
       {:simple_sat, "~> 0.1"},
       {:ash_graphql, "~> 1.0.0"},
-      {:ash_postgres, "~> 2.0.0"}
+      {:ash_postgres, "~> 2.0.0"},
+      {:phoenix_pubsub, "~> 2.0"},
+      {:absinthe_phoenix, "~> 2.0"},
     ]
   end
 

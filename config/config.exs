@@ -24,6 +24,12 @@ config :ticketing, TicketingWeb.Endpoint,
   pubsub_server: Ticketing.PubSub,
   live_view: [signing_salt: "1Y92pIhN"]
 
+# AshGraphql
+# https://hexdocs.pm/ash_graphql/getting-started-with-graphql.html#add-some-backwards-compatibility-configuration
+config :ash_graphql, :default_managed_relationship_type_name_template, :action_name
+# https://hexdocs.pm/ash_graphql/use-json-with-graphql.html
+config :ash_graphql, :json_type, :json
+
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",

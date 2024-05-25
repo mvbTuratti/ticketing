@@ -2,6 +2,7 @@ defmodule Ticketing.GraphqlSchema do
   use Absinthe.Schema
 
   use AshGraphql, domains: [Ticketing.Support]
+  require Ash.Query
 
   # The query and mutation blocks is where you can add custom absinthe code
   query do
@@ -9,4 +10,23 @@ defmodule Ticketing.GraphqlSchema do
 
   mutation do
   end
+
+  subscription do
+    field :assing_representative, :ticket do
+      arg :representative_id, :string
+
+      resolve(fn args, _, resolution ->
+        # loads all the data you need
+        AshGraphql.Subscription.query_for_subscription(
+          Ticketing.Support.Ticket,
+          Ticketing.Support,
+          resolution
+        )
+        |> IO.inspect()
+        |> Ash.Query.filter(representative_id == ^args.representative)
+        |> Ash.read()
+      end)
+    end
+  end
+
 end
