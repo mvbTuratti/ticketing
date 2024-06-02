@@ -4,7 +4,6 @@ defmodule TicketingWeb.TicketSocket do
     schema: Ticketing.Schema
   require Ash.Query
 
-  channel "example", TicketingWeb.TicketSocket
   # def connect(params, socket) do
   #   tickets_assigned_to_user = get_tickets_assigned(params)
   #   socket = Absinthe.Phoenix.Socket.put_options(socket, context: %{

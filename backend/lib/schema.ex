@@ -15,6 +15,10 @@ defmodule Ticketing.GraphqlSchema do
     field :assing_representative, :ticket do
       arg :representative_id, :string
 
+      config fn args, _ ->
+        {:ok, topic: args.representative_id}
+      end
+
       resolve(fn args, _, resolution ->
         # loads all the data you need
         AshGraphql.Subscription.query_for_subscription(
@@ -23,7 +27,7 @@ defmodule Ticketing.GraphqlSchema do
           resolution
         )
         |> IO.inspect()
-        |> Ash.Query.filter(representative_id == ^args.representative)
+        |> Ash.Query.filter(representative_id == ^args.representative_id)
         |> Ash.read()
       end)
     end
