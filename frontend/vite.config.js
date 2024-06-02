@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/gql': 'http://localhost:4000',
+      '/socket': "ws://localhost:4000"
     },
   },
 })

@@ -33,6 +33,10 @@ defmodule Ticketing.Support.Ticket do
       )
     end
 
+    read :list_all_tickets do
+      pagination offset?: true, countable: :by_default
+    end
+
     read :check_open do
       filter (
         expr do
@@ -63,6 +67,7 @@ defmodule Ticketing.Support.Ticket do
       get :get_ticket, :read
       list :list_tickets, :query_tickets
       list :get_open_ticket, :check_open
+      list :list_all_tickets, :list_all_tickets
     end
 
     mutations do
@@ -97,7 +102,7 @@ defmodule Ticketing.Support.Ticket do
 
       # The status defaulting to open makes sense
       default :open
-
+      public? true
     end
   end
   relationships do

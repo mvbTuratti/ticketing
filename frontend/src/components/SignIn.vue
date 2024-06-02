@@ -31,15 +31,12 @@
             </div>
         </div>
         </div>
-        <span class="text-black">
-            names {{ names }}
-        results {{ representativesData }}</span>
     </div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
-import { ref, computed, watch } from 'vue'
+import { ref } from 'vue'
 import { useRepresentativeStore } from '../../stores/representatives'
 import { storeToRefs } from 'pinia'
 
@@ -58,7 +55,7 @@ function goToRepresentative(){
 
 function setName(name) {
     userName.value = name
-    const elem = document.activeElement;
+    const elem = document.activeElement
     if (elem) {
       elem?.blur();
     }

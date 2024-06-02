@@ -9,12 +9,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@absinthe/socket": "^0.2.1",
+    "@absinthe/socket-apollo-link": "^0.2.1",
     "@apollo/client": "^3.10.4",
     "@vue/apollo-composable": "^4.0.2",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
+    "graphql-ws": "^5.16.0",
     "phoenix": "^1.7.12",
     "pinia": "^2.1.7",
+    "react": "^18.3.1",
     "vue": "^3.4.21",
     "vue-router": "^4.3.2"
   },
