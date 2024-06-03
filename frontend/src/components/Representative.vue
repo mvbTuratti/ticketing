@@ -3,7 +3,7 @@
         <!-- Hi {{ $route.params.name }} -->
         <div class="drawer lg:drawer-open">
             <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-            <div class="drawer-content flex flex-col items-center justify-center">
+            <div class="drawer-content flex flex-col items-center justify-center mt-2 mb-2">
                 <!-- Page content here -->
                 <Tickets v-if="content"></Tickets>
                 <template v-else>
@@ -36,7 +36,7 @@ import { storeToRefs } from 'pinia'
 const route = useRoute()
 const router = useRouter()
 const store = useRepresentativeStore()
-const { isUserAvailable, createRepresentative } = store
+const { isUserAvailable, createRepresentative, assingUserId } = store
 const { representativesData, userId } = storeToRefs(store)
 
 const content = ref(true)
@@ -49,6 +49,8 @@ if (!name){
 onMounted(() => {
     if (!isUserAvailable(name)){
         createRepresentative(name)
+    } else {
+        assingUserId(name)
     }
 })
 

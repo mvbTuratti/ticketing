@@ -47,6 +47,7 @@ export const useRepresentativeStore = defineStore('representatives', () => {
             }
             `)
         createUser().then((response) => {
+            console.log("create user", response)
             const id = response.data.addRepresentative?.result.id
             if (id){
                 userId.value = id
@@ -57,8 +58,11 @@ export const useRepresentativeStore = defineStore('representatives', () => {
         })
         
     }
+    function assingUserId(userName){
+        userId.value = representativesData.value.find((item) => item.name === userName).id
+    }
     function isUserAvailable(userName) {
         return names.value.includes(userName)
     }
-    return { names, representativesData, _state, userId, fetchRepresentatives, isUserAvailable, createRepresentative }
+    return { names, representativesData, _state, userId, assingUserId, fetchRepresentatives, isUserAvailable, createRepresentative }
   })

@@ -8,14 +8,13 @@
         <th>Status</th>
         <th></th>
         <th></th>
-        <th></th>
       </tr>
     </thead>
     <tbody>
       <!-- row 1 -->
       <template v-for="ticket in props.tickets">
-      <tr>
-        <td>
+      <tr :id="ticket.id">
+        <td :userid="ticket.representative ? ticket.representative.id : ''">
           <div class="flex items-center gap-3">
             <div>
               <div class="font-bold" :class="!ticket.representative && `font-light`">{{ ticket.representative?.name ?? `unassigned` }}</div>
@@ -29,9 +28,6 @@
         <th>
           <button class="btn btn-ghost btn-xs" v-if="!ticket.representative">Assinalar</button>
           <span class=" btn-xs text-gray-500" v-else>Assinalar</span>
-        </th>
-        <th>
-          <button class="btn btn-ghost btn-xs" v-if="ticket.status === 'open'">Fechar</button>
         </th>
         <th>
             <button class="btn btn-circle btn-outline">
@@ -49,7 +45,6 @@
         <th>Status</th>
         <th></th>
         <th></th>
-        <th></th>
       </tr>
     </tfoot>
     
@@ -58,8 +53,14 @@
 </template>
 
 <script setup>
+import { useQuery } from '@vue/apollo-composable'
+import gql from 'graphql-tag'
+
 const props = defineProps({
     tickets: Array,
     required: true
 })
+console.log("here")
+console.log(props.tickets.value)
+
 </script>
