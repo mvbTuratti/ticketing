@@ -3,7 +3,7 @@ defmodule Ticketing.Support.Ticket do
   use Ash.Resource,
   domain: Ticketing.Support,
   data_layer: AshPostgres.DataLayer,
-  # data_layer: Ash.DataLayer.Ets,
+  notifiers: [Ticketing.Notifications.Notifier],
   extensions: [
     AshGraphql.Resource
   ]
