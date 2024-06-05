@@ -1,7 +1,7 @@
 defmodule TicketingWeb.TicketSocket do
   use Phoenix.Socket
 
-  channel "representative:*", TicketingWeb.Channel.Representative
+  channel "tickets:*", TicketingWeb.Channel.TicketsChange
 
   @impl true
   def connect(params, socket) do
