@@ -5,14 +5,14 @@ defmodule TicketingWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, html: {TicketingWeb.Layouts, :root}
+    # plug :put_root_layout, html: {TicketingWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
+  # pipeline :api do
+  #   plug :accepts, ["json"]
+  # end
 
   pipeline :graphql do
     plug AshGraphql.Plug
