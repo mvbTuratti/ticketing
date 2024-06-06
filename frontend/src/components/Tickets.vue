@@ -16,7 +16,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-8 h-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
     </div>
     <div class="stat-title">Total de Tickets</div>
-    <div class="stat-value text-secondary">{{ data.total }}</div>
+    <div class="stat-value text-secondary">{{ totalTasks }}</div>
     <div class="stat-desc">Tickets abertos ou fechados</div>
   </div>
   
@@ -53,77 +53,56 @@
         </dialog>
     </div>
 </div>
-<AllTickets :tickets="allTickets" v-if="checked"></AllTickets>
+<AllTickets :tickets="tickets" v-if="checked" ></AllTickets>
 <UserTickets :tickets="taskAssignedToUser" v-else></UserTickets>
 </template>
 
 <script setup>
-import { ref, reactive, watch, computed } from 'vue'
-import { useQuery, useMutation, provideApolloClient } from '@vue/apollo-composable'
+import { ref, watch, computed } from 'vue'
+import { useQuery, useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import AllTickets from './AllTickets.vue'
 import UserTickets from './UserTickets.vue'
 import { storeToRefs } from 'pinia'
 import { useRepresentativeStore } from '../../stores/representatives'
+import { useTicketStore } from '../../stores/tickets'
+import { Socket as PhoenixSocket } from 'phoenix'
 
 const store = useRepresentativeStore()
-const { userId, representativesData } = storeToRefs(store)
+const ticketStore = useTicketStore()
+const { userId } = storeToRefs(store)
+
+const { fetchTickets } = ticketStore
+const { tickets } = storeToRefs(ticketStore)
+
 
 const checked = ref(true)
-const data = ref({total: 0})
-const allTickets = ref([])
 const novoTicket = ref("")
 
-watch(checked, (newValue, oldValue) => {
-    if (!newValue){
-        refetch()
-    }
-})
 const assignedTasks = computed(() => {
-    return allTickets.value.filter((ticket) => ticket.representative?.id === userId.value).length
+    return tickets.value.filter((ticket) => ticket.representative?.id === userId.value).length
+})
+
+const totalTasks = computed(() => {
+    return tickets.value.length
 })
 
 const openAssignedTasks = computed(() => {
-    return allTickets.value.filter((ticket) => ticket.representative?.id === userId.value && ticket.status === 'open').length
+    return tickets.value.filter((ticket) => ticket.representative?.id === userId.value && ticket.status === 'open').length
 })
 const completedTasksByUser = computed(() => {
-    let completed = allTickets.value.filter((ticket) => ticket.representative?.id === userId.value && ticket.status === 'closed').length
-    return Math.floor(completed / assignedTasks.value) * 100;
+    let completed = tickets.value.filter((ticket) => ticket.representative?.id === userId.value && ticket.status === 'closed').length
+    return Math.floor((completed / assignedTasks.value) * 100 ) || 0;
 })
 
 const taskAssignedToUser = computed(() => {
-    return allTickets.value.filter((ticket) => ticket.representative?.id === userId.value)
+    return tickets.value.filter((ticket) => ticket.representative?.id === userId.value)
 })
-
-const { result, loading, error, refetch } = useQuery(gql`
-    query ListTickets {
-        listAllTickets(limit: 250) {
-            results {
-                id
-                subject
-                status
-                representative {
-                    id
-                    name
-                }
-            }
-        }
-    }
-`)
-watch(result, value => {
-    allTickets.value = value.listAllTickets?.results ?? []
-    data.value.total = allTickets.value.length
-})
-
 
 
 function createTicketFunction() {
     createSimpleTicket().then((r) => {
-        const item = r.data.createTicket?.result ?? null
-        if (item){
-            allTickets.value = [...allTickets.value, item]
-            data.value.total = allTickets.value.length
-        }
+        //
     }).catch(err => { console.log(err)})
 }
 
@@ -146,4 +125,28 @@ const { mutate: createSimpleTicket } = useMutation(gql`
     text: novoTicket.value,
   },
 }))
+
+
+const socket = new PhoenixSocket("/socket", {params: {token: window.userToken}})
+socket.connect()
+const channel = socket.channel(`tickets:updates`, {})
+channel.join()
+  .receive("ok", resp => { console.log("Joined successfully", resp) })
+  .receive("error", resp => { console.log("Unable to join", resp) })
+
+channel.on("assigned", payload => {
+    tickets.value = tickets.value.map(ticket => ticket.id === payload.id ? payload : ticket)
+})
+
+channel.on("created", payload => {
+    tickets.value = [ ...tickets.value, payload ]
+})
+
+channel.on("deleted", payload => {
+    tickets.value = tickets.value.filter((ticket) => ticket.id !== payload.id)
+})
+
+fetchTickets()
+
+
 </script>

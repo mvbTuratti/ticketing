@@ -2,17 +2,21 @@ import { defineStore } from 'pinia'
 import { useQuery, useMutation } from '@vue/apollo-composable'
 import gql from 'graphql-tag'
 import { ref, computed, watch, reactive } from 'vue'
+import { apolloClient } from '../src/apollo'
+import { provideApolloClient } from "@vue/apollo-composable";
 
 
 export const useRepresentativeStore = defineStore('representatives', () => {
     const _state = reactive({"value": {"listRepresentatives": {"results": ref([])}}})
     const userId = ref("")
+    const deletedUsers = ref([])
     const names = computed(() => {
-        return _state.value.listRepresentatives.results.map((entry) => {
-            return entry.name
+        return _state.value.listRepresentatives.
+            results.filter((entry) => !deletedUsers.value.includes(entry.id)).
+            map((entry) => { return entry.name
         })
     })
-    const representativesData = computed(() => _state.value.listRepresentatives.results)
+    const representativesData = computed(() => _state.value.listRepresentatives.results.filter((entry) => !deletedUsers.value.includes(entry.id)))
     function fetchRepresentatives() {
         const { result } = useQuery(gql`
             query ListRepresentatives {
@@ -58,11 +62,27 @@ export const useRepresentativeStore = defineStore('representatives', () => {
         })
         
     }
+    function deleteRepresentative(representativeId){
+        const query = provideApolloClient(apolloClient)(() => useMutation(gql`
+            mutation RemoveRepresentative {
+                removeRepresentative(id: "${representativeId}") {
+                    result {
+                        id
+                    }
+                }
+            }
+        `))
+        query.mutate()
+        query.onDone((r) =>{
+            console.log("deleted",  r)
+            deletedUsers.value = [...deletedUsers.value, r.data.removeRepresentative.result.id]
+        })
+    }
     function assingUserId(userName){
         userId.value = representativesData.value.find((item) => item.name === userName).id
     }
     function isUserAvailable(userName) {
         return names.value.includes(userName)
     }
-    return { names, representativesData, _state, userId, assingUserId, fetchRepresentatives, isUserAvailable, createRepresentative }
+    return { names, representativesData, _state, userId, assingUserId, fetchRepresentatives, isUserAvailable, createRepresentative, deleteRepresentative }
   })

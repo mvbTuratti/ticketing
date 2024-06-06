@@ -6,9 +6,7 @@
             <div class="drawer-content flex flex-col items-center justify-center mt-2 mb-2">
                 <!-- Page content here -->
                 <Tickets v-if="content"></Tickets>
-                <template v-else>
-                    test 2
-                </template>
+                <RepresentativeDeletion v-else></RepresentativeDeletion>
                 <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">Open drawer</label>
             
             </div> 
@@ -32,6 +30,7 @@ import { onMounted, ref } from 'vue';
 import { useRepresentativeStore } from '../../stores/representatives'
 import Tickets from "./Tickets.vue"
 import { storeToRefs } from 'pinia'
+import RepresentativeDeletion from './RepresentativeDeletion.vue';
 
 const route = useRoute()
 const router = useRouter()

@@ -16,6 +16,7 @@
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
     "graphql-ws": "^5.16.0",
+    "js-crypto-rsa": "^1.0.7",
     "phoenix": "^1.7.12",
     "pinia": "^2.1.7",
     "react": "^18.3.1",
