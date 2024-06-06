@@ -8,7 +8,7 @@ import { provideApolloClient } from "@vue/apollo-composable";
 
 export const useTicketStore = defineStore('tickets', () => {
     const ticketsClosed = ref({})
-    const ticketsDeleted = ref("")
+    const tickets = ref([])
     function closeUserTicket(ticketId) {
         console.log(ticketId)
         const query = provideApolloClient(apolloClientTickets)(() => useMutation(gql`
@@ -35,6 +35,27 @@ export const useTicketStore = defineStore('tickets', () => {
             }
         })
     }
+    function fetchTickets() {
+        const query = provideApolloClient(apolloClientTickets)(() => useMutation(gql`
+            query ListTickets {
+                listAllTickets(limit: 250) {
+                    results {
+                        id
+                        subject
+                        status
+                        representative {
+                            id
+                            name
+                        }
+                    }
+                }
+            }
+        `))
+        query.mutate()
+        query.onDone((value) => {
+            tickets.value = value.data.listAllTickets?.results ?? []
+        })
+    }
     function deleteTicket(ticketId) {
         console.log(ticketId)
         const query = provideApolloClient(apolloClientTickets)(() => useMutation(gql`
@@ -50,11 +71,29 @@ export const useTicketStore = defineStore('tickets', () => {
         query.onDone((r) => {
             console.log(r)
             const result = r.data.deleteTicket?.result ?? null
-            if (result){
-                ticketsDeleted.value = ticketId
-            }
         })
     }
+    function assignTicket(ticketId, userId) {
+        console.log(ticketId)
+        const query = provideApolloClient(apolloClientTickets)(() => useMutation(gql`
+            mutation AssingRepresentative {
+                assingRepresentative(id: "${ticketId}", input: { representativeId: "${userId}" }) {
+                    result {
+                        id
+                    }
+                }
+            }
+        `))
+        query.mutate((r) =>  console.log(r))
+        query.onDone((r) => {
+            console.log(r)
+        })
+    }
+    function setTickets(ticketsCollection){
+        console.log("set ticket")
+        console.log(ticketsCollection)
+        tickets.value = ticketsCollection.value
+    }
 
-    return { ticketsDeleted, ticketsClosed, closeUserTicket, deleteTicket }
+    return { tickets, ticketsClosed, setTickets, closeUserTicket, deleteTicket, assignTicket, fetchTickets }
   })

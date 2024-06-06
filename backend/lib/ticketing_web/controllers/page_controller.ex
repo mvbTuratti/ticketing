@@ -6,4 +6,5 @@ defmodule TicketingWeb.PageController do
     # so skip the default app layout.
     render(conn, :index, layout: false)
   end
+
 end

@@ -10,9 +10,9 @@ defmodule TicketingWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  # pipeline :api do
-  #   plug :accepts, ["json"]
-  # end
+  pipeline :api do
+    plug :accepts, ["json"]
+  end
 
   pipeline :graphql do
     plug AshGraphql.Plug
@@ -22,6 +22,13 @@ defmodule TicketingWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+  end
+
+  scope "/api", TicketingWeb do
+    pipe_through :api
+
+    get "/cert", CertApi, :show
+    get "/message", CertApi, :message
   end
 
   scope "/" do

@@ -62,6 +62,7 @@ defmodule Ticketing.MixProject do
       {:ash_postgres, "~> 2.0.0"},
       {:phoenix_pubsub, "~> 2.0"},
       {:absinthe_phoenix, "~> 2.0"},
+      {:joken, "~> 2.6"}
     ]
   end
 
